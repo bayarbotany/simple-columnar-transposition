@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { Button, Card, Typography } from 'antd';
+import React from 'react';
+import { Container } from 'react-bootstrap';
+import InputCard from './components/InputCard';
+import OutputCard from './components/OutputCard';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container
+      style={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        flexDirection: 'row',
+        flex: 1,
+      }}
+    >
+      
+      <InputCard />
+       <OutputCard />
+
+    </Container>
   );
 }
 
