@@ -23,10 +23,51 @@ const decryptSimpleTransposition = async (text, key) => {
 };
 
 const encryptColumnarTranspositionWithKey = async (text, key) => {
-  let result = '';
+  let encryptedText = "";
   try {
-    //write code here
-    return result;
+
+    text = text.toUpperCase().trim();
+    key = key.toUpperCase().trim();
+    
+    //check if special characters exist in key or the text
+    if(! /^[A-Z]+$/.test(text+key)){return "Error!: No special characters accepted for the key or text"}
+
+
+
+    var keyLen = key.length;
+    var txtLen = text.length;
+    var noRows = Math.floor(txtLen / keyLen);
+
+    let textCounter = 0;
+    var dynamicArray = [];
+
+    // put the text into an array
+    for (var i = 0; i < noRows; i++) {
+    dynamicArray[i] = [];
+    for (var j = 0; j < keyLen; j++) {
+        
+        dynamicArray[i][j] = text[textCounter];
+        textCounter++;
+      }
+    }
+
+    // save the order of the key
+    var dict = {};
+    for(var k = 0; k < keyLen; k++){
+      dict[key[k]] = k;
+    }
+
+    let orderedKey = key.split("").sort().join("");
+
+    // join the encrypted text
+    for(let a = 0; a < keyLen; a++){
+        encryptedText += dynamicArray.map(x=> x[dict[orderedKey[a]]]).join("")
+    }
+
+    return encryptedText;  //result
+
+    
+   
   } catch (err) {
     console.log('encryptColumnarTranspositionWithKey -> err', err);
     return 'Encrypted COLUMNAR TRANSPOSITION WITH KEY';
@@ -34,11 +75,45 @@ const encryptColumnarTranspositionWithKey = async (text, key) => {
 };
 
 const decryptColumnarTranspositionWithKey = async (text, key) => {
-  let result = '';
+  let decrypted = "";
 
   try {
-    //write code here
-    return result;
+
+    text = text.toUpperCase().trim();
+    key = key.toUpperCase().trim();
+    
+    //check if special characters exist in key or the text
+    if(! /^[A-Z]+$/.test(text+key)){return "Error!: No special characters accepted for the key or text"}
+    
+    var keyLen = key.length;
+    var textLen = text.length;
+    var noRows = Math.floor(textLen / keyLen);
+
+    //order the key alphabetically    
+    let orderedKey = key.split("").sort().join("");
+    
+    //create an array based on no. rows and columns
+    var arr = Array(noRows).fill("").map(() => Array(keyLen));
+    
+    //put the text in the array based on the order of the key
+    for(let i = 0; i < keyLen; i++){
+        let startIndex = orderedKey.indexOf(key[i]) * 2; 
+        
+        for(let j = 0; j < noRows && startIndex < textLen; j++){
+            arr[j][i]= text[startIndex];
+            startIndex++;
+        }
+        
+    }
+ 
+    
+    for(let k = 0; k < noRows; k++){
+        decrypted += arr[k].join("");
+    }
+    
+    return decrypted; //result
+
+
   } catch (err) {
     console.log('decryptColumnarTranspositionWithKey -> err', err);
     return 'Decrypted COLUMNAR TRANSPOSITION WITH KEY';
