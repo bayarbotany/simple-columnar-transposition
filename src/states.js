@@ -1,6 +1,6 @@
 import { hookstate } from '@hookstate/core';
 
-// cipherMode is 
+// cipherMode is
 const cipherMode = hookstate({
   value: 'encrypt',
   label: 'Encrypt',
@@ -37,6 +37,17 @@ const loading = hookstate(false);
 
 const error = hookstate('');
 
+const instruction = hookstate([]);
+
+const addInstruction = (instruction) => {
+  states.instruction.set([...states.instruction.get(), instruction]);
+};
+
+const clearInstruction = () => {
+  states.instruction.set([]);
+}
+
+
 export const states = {
   cipherMode,
   cipherType,
@@ -46,6 +57,9 @@ export const states = {
   result,
   loading,
   error,
+  instruction,
+  addInstruction,
+  clearInstruction,
 };
 
 export default states;

@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import states from '../states';
 import { useHookstate } from '@hookstate/core';
 import functions from '../functions/functions';
+import { Container } from 'react-bootstrap';
 
 function OutputCard() {
   const selectedCipherType = useHookstate(states.cipherType);
@@ -77,10 +78,32 @@ function OutputCard() {
           </Button>
         </Col>
       </Row>
-    
 
-     
-
+      <Typography.Title level={4}>Instruction</Typography.Title>
+      {/* instruction box */}
+      <Container
+        style={{
+          overflowY: 'scroll',
+          height: '200px',
+          border: '1px solid black',
+          borderRadius: '5px',
+          padding: '5px',
+          marginBottom: '10px',
+        }}
+      >
+        {states.instruction.get().map((instruction, index) => (
+          <Typography.Text
+            style={{
+              display: 'block',
+              whiteSpace: 'pre-line',
+              marginBottom: '5px',
+            }}
+            key={index}
+          >
+            {instruction}
+          </Typography.Text>
+        ))}
+      </Container>
     </Card>
   );
 }
