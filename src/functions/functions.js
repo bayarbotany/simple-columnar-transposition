@@ -1,10 +1,28 @@
 import states from '../states';
 
-const encryptSimpleTransposition = async (text, key) => {
+const encryptSimpleTransposition = async (plainText, keyword) => {
   let result = '';
   try {
-    //write code here
-    return result;
+
+    const hasRepeatingCharacters = str => new Set(str).size !== str.length;
+    if (hasRepeatingCharacters(keyword)) {
+        return 'Keyword should not contain repeated characters.'
+    }
+    if (plainText.length !== keyword.length) {
+        return "Length of the plain text should be equal to the length of the keyword."
+    }
+    
+    const transpositionKey = keyword.split('').sort().map(char => keyword.indexOf(char));
+    let encryptedText = '';
+    for (let i = 0; i < plainText.length; i += keyword.length) {
+      for (let j = 0; j < keyword.length; j++) {
+        const index = i + transpositionKey[j];
+        if (index < plainText.length) {
+            encryptedText += plainText[index];
+        }
+      }
+    }
+    return encryptedText;
   } catch (err) {
     console.log('encryptSimpleTransposition -> err', err);
     return 'Encrypted SIMPLE TRANSPOSITION';
@@ -36,7 +54,7 @@ const encryptColumnarTranspositionWithKey = async (text, key) => {
 
     var keyLen = key.length;
     var txtLen = text.length;
-    var noRows = Math.floor(txtLen / keyLen);
+    var noRows = Math.ceil(txtLen / keyLen);
 
     let textCounter = 0;
     var dynamicArray = [];
@@ -83,11 +101,11 @@ const decryptColumnarTranspositionWithKey = async (text, key) => {
     key = key.toUpperCase().trim();
     
     //check if special characters exist in key or the text
-    if(! /^[A-Z]+$/.test(text+key)){return "Error!: No special characters accepted for the key or text"}
+    //if(! /^[A-Z]+$/.test(text+key)){return "Error!: No special characters accepted for the key or text"}
     
     var keyLen = key.length;
     var textLen = text.length;
-    var noRows = Math.floor(textLen / keyLen);
+    var noRows = Math.ceil(textLen / keyLen);
 
     //order the key alphabetically    
     let orderedKey = key.split("").sort().join("");
