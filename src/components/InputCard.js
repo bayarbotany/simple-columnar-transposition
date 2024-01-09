@@ -3,6 +3,7 @@ import { Button, Card, Col, Divider, Input, Row, Typography } from 'antd';
 import React from 'react';
 import { Container } from 'react-bootstrap';
 import states from '../states';
+import functions from '../functions/functions';
 
 const RenderTypes = () => {
   const types = useHookstate(states.cipherType);
@@ -138,6 +139,17 @@ function InputCard() {
       </Row>
       <RenderTypes />
       <Divider />
+      <Row>
+        <Col span={24}>
+          <Button
+            onClick={() => {
+              functions.compute();
+            }}
+          >
+            Compute
+          </Button>
+        </Col>
+      </Row>
     </Card>
   );
 }

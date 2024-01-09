@@ -15,6 +15,7 @@ function OutputCard() {
   useEffect(() => {
     functions.compute();
   }, [selectedCipherType, selectedCipherMode, key, blockSize, text]);
+
   const type = useHookstate(states.cipherType.nested('value'));
 
   return (
@@ -65,6 +66,41 @@ function OutputCard() {
           <Statistic title='Result' value={result.value || ' '} />
         </Col>
       </Row>
+      <Row gutter={16}>
+        <Col span={24}>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(result.value);
+            }}
+          >
+            Copy
+          </Button>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={24}>
+          <Button
+            onClick={() => {
+              states.text.set(result.value);
+            }}
+          >
+            Use as Input
+          </Button>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col span={24}>
+          <Button
+            onClick={() => {
+              states.result.set('');
+            }}
+          >
+            Clear
+          </Button>
+        </Col>
+      </Row>
+
     </Card>
   );
 }
