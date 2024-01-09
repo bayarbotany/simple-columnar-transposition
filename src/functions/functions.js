@@ -324,6 +324,19 @@ const decryptColumnarTranspositionWithKey = async (text, key) => {
 const encryptColumnarTranspositionWithBlockSize = (text, blockSize) => {
   let result = '';
 
+  if (blockSize < 2) {
+    states.addInstruction(`1. The block size is less than 2.`);
+    return 'Error!: Block size should be at least 2';
+  }
+  states.addInstruction(`1. The block size is greater than or equal to 2.`);
+
+  //if not number
+  if (isNaN(blockSize)) {
+    states.addInstruction(`2. The block size is not a number.`);
+    return 'Error!: Block size should be a number';
+  }
+  states.addInstruction(`2. The block size is a number.`);
+
   text = text.toUpperCase().replace(/[^A-Z]/g, ''); // Remove non-alphabetic characters and convert to uppercase
   states.addInstruction(`1. Convert the text to uppercase. ${text}`);
 
@@ -377,6 +390,33 @@ const decryptColumnarTranspositionWithBlockSize = async (text, blockSize) => {
   let result = '';
 
   try {
+    if (blockSize < 2) {
+      states.addInstruction(`1. The block size is less than 2.`);
+      return 'Error!: Block size should be at least 2';
+    }
+
+    states.addInstruction(`1. The block size is greater than or equal to 2.`);
+    //if not number
+    if (isNaN(blockSize)) {
+      states.addInstruction(`2. The block size is not a number.`);
+      return 'Error!: Block size should be a number';
+    }
+    states.addInstruction(`2. The block size is a number.`);
+    
+    text = text.toUpperCase().replace(/[^A-Z]/g, ''); // Remove non-alphabetic characters and convert to uppercase
+    states.addInstruction(`1. Convert the text to uppercase. ${text}`);
+
+    // Padding the text if necessary
+    while (text.length % blockSize !== 0) {
+      states.addInstruction(
+        `2. The length of the text is not divisible by the block size.`
+      );
+      states.addInstruction(`3. Append the character 'X' to the text.`);
+      text += 'X'; // Padding with 'X'
+      states.addInstruction(`4. The text is now ${text}.`);
+    }
+
+
     const rows = Math.ceil(text.length / blockSize);
     states.addInstruction(`1. The number of rows is ${rows}.`);
     for (let i = 0; i < rows; i++) {
@@ -388,14 +428,12 @@ const decryptColumnarTranspositionWithBlockSize = async (text, blockSize) => {
     }
 
     states.addInstruction(`4. The decrypted text is ${result}.`);
-    
 
     // Remove padding
     result = result.replace(/X+$/, '');
 
     states.addInstruction(`5. Remove the padding.`);
     states.addInstruction(`6. The decrypted text is ${result}.`);
-    
 
     return result;
   } catch (err) {
