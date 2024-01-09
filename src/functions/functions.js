@@ -80,12 +80,19 @@ const decryptSimpleTransposition = async (ciphertext, keyword) => {
 const encryptColumnarTranspositionWithKey = async (text, key) => {
   let encryptedText = '';
   try {
-    text = text.toUpperCase().trim();
-    key = key.toUpperCase().trim();
+    text = text.toUpperCase().replace(/[^A-Z]/g, ''); // Remove non-alphabetic characters and convert to uppercase
+    key = key.toUpperCase().replace(/[^A-Z]/g, ''); // Remove non-alphabetic characters and convert to uppercase
 
-    //check if special characters exist in key or the text
-    if (!/^[A-Z]+$/.test(text + key)) {
-      return 'Error!: No special characters accepted for the key or text';
+    if (key.length < 2) {
+      return 'Error!: Key should be at least 2 characters';
+    }
+    //key must not have repeating characters
+    if (new Set(key).size !== key.length) {
+      return 'Error!: Key should not have repeating characters';
+    }
+
+    if (text.length < key.length) {
+      return 'Error!: Text should be at least the length of the key';
     }
 
     var keyLen = key.length;
@@ -128,8 +135,8 @@ const decryptColumnarTranspositionWithKey = async (text, key) => {
   let decrypted = '';
 
   try {
-    text = text.toUpperCase().trim();
-    key = key.toUpperCase().trim();
+    text = text.toUpperCase().replace(/[^A-Z]/g, ''); // Remove non-alphabetic characters and convert to uppercase
+    key = key.toUpperCase().replace(/[^A-Z]/g, ''); // Remove non-alphabetic characters and convert to uppercase
 
     //check if special characters exist in key or the text
     if (!/^[A-Z]+$/.test(text + key)) {
@@ -218,10 +225,11 @@ const encryptColumnarTranspositionWithBlockSize = (text, blockSize) => {
 };
 
 // Example usage
-const encryptedText = encryptColumnarTranspositionWithBlockSize("BAYARDILZARX", 2);
+const encryptedText = encryptColumnarTranspositionWithBlockSize(
+  'BAYARDILZARX',
+  2
+);
 console.log(encryptedText); // Expected output: "BYRAIDAZLXAR"
-
-
 
 const decryptColumnarTranspositionWithBlockSize = async (text, blockSize) => {
   let result = '';
@@ -257,14 +265,14 @@ const compute = () => {
 
   const text = states.text.get();
 
-  if (!text || !key || !blockSize) {
-    return states.result.set('');
+  if (!text) {
+    return states.result.set(`Please fill in all the fields.`);
   }
   if (
     selectedCipherType === 'columnarTranspositionWithBlockSize' &&
     !blockSize
   ) {
-    return states.result.set('');
+    return states.result.set('Please fill in the block size field.');
   }
 
   switch (selectedCipherType) {

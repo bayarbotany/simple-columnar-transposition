@@ -77,29 +77,9 @@ function OutputCard() {
           </Button>
         </Col>
       </Row>
-      <Row gutter={16}>
-        <Col span={24}>
-          <Button
-            onClick={() => {
-              states.text.set(result.value);
-            }}
-          >
-            Use as Input
-          </Button>
-        </Col>
-      </Row>
+    
 
-      <Row gutter={16}>
-        <Col span={24}>
-          <Button
-            onClick={() => {
-              states.result.set('');
-            }}
-          >
-            Clear
-          </Button>
-        </Col>
-      </Row>
+     
 
     </Card>
   );
