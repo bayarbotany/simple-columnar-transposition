@@ -1,21 +1,81 @@
 import states from '../states';
 
-const encryptSimpleTransposition = async (text, key) => {
-  let result = '';
+const encryptSimpleTransposition = async (plainText, keyword) => {
+
+  //Rona
+  
+  plainText = plainText.toUpperCase();
+  keyword = keyword.toUpperCase();
+
   try {
-    //write code here
-    return result;
+
+    const hasRepeatingCharacters = str => new Set(str).size !== str.length;
+    if (hasRepeatingCharacters(keyword)) {
+        return 'Keyword should not contain repeated characters.'
+    }
+    if (plainText.length !== keyword.length) {
+        return "Length of the plain text should be equal to the length of the keyword."
+    }
+    
+    const transpositionKey = keyword.split('').sort().map(char => keyword.indexOf(char));
+    let encryptedText = '';
+    for (let i = 0; i < plainText.length; i += keyword.length) {
+      for (let j = 0; j < keyword.length; j++) {
+        const index = i + transpositionKey[j];
+        if (index < plainText.length) {
+            encryptedText += plainText[index];
+        }
+      }
+    }
+    return encryptedText;
   } catch (err) {
     console.log('encryptSimpleTransposition -> err', err);
     return 'Encrypted SIMPLE TRANSPOSITION';
   }
 };
 
-const decryptSimpleTransposition = async (text, key) => {
-  let result = '';
+const decryptSimpleTransposition = async (ciphertext, keyword) => {
+  
   try {
-    //write code here
-    return result;
+
+    //Huda
+
+    ciphertext = ciphertext.toUpperCase();
+    keyword = keyword.toUpperCase()
+    let k_indx = 0;
+    let msg_indx = 0;
+    const msg_len = ciphertext.length;
+    const msg_lst = Array.from(ciphertext);
+    const col = keyword.length;
+    const row = Math.ceil(msg_len / col);
+    const key_lst = Array.from(keyword).sort();
+    const dec_cipher = [];
+    
+    for (let i = 0; i < row; i++) {
+        dec_cipher.push(Array(col).fill(null));
+    }
+
+    for (let _ = 0; _ < col; _++) {
+        const curr_idx = keyword.indexOf(key_lst[k_indx]);
+
+        for (let j = 0; j < row; j++) {
+            dec_cipher[j][curr_idx] = msg_lst[msg_indx];
+            msg_indx++;
+        }
+        k_indx++;
+    }
+
+    try {
+        ciphertext = dec_cipher.flat().join('');
+    } catch (err) {
+        throw new Error("Error");
+    }
+
+    return ciphertext;
+
+
+    
+    
   } catch (err) {
     console.log('decryptSimpleTransposition -> err', err);
     return 'Decrypted SIMPLE TRANSPOSITION';
@@ -36,7 +96,7 @@ const encryptColumnarTranspositionWithKey = async (text, key) => {
 
     var keyLen = key.length;
     var txtLen = text.length;
-    var noRows = Math.floor(txtLen / keyLen);
+    var noRows = Math.ceil(txtLen / keyLen);
 
     let textCounter = 0;
     var dynamicArray = [];
@@ -64,7 +124,7 @@ const encryptColumnarTranspositionWithKey = async (text, key) => {
         encryptedText += dynamicArray.map(x=> x[dict[orderedKey[a]]]).join("")
     }
 
-    return encryptedText;  //result
+    return encryptedText ;  //result
 
     
    
@@ -87,26 +147,49 @@ const decryptColumnarTranspositionWithKey = async (text, key) => {
     
     var keyLen = key.length;
     var textLen = text.length;
-    var noRows = Math.floor(textLen / keyLen);
-
+    var noRows = Math.ceil(textLen / keyLen);
+    var noCompleteRows= Math.floor(textLen/ keyLen);
+    var noCompleteColumns = textLen%keyLen;
+    
+    
+    
     //order the key alphabetically    
     let orderedKey = key.split("").sort().join("");
+    let textArr= text.split("")
+    
+    // save the order of the key
+    var dict = {};
+    for(var k = 0; k < keyLen; k++){
+      dict[orderedKey[k]] = k;
+    }
+    //console.log(noCompleteColumns)
     
     //create an array based on no. rows and columns
     var arr = Array(noRows).fill("").map(() => Array(keyLen));
     
-    //put the text in the array based on the order of the key
-    for(let i = 0; i < keyLen; i++){
-        let startIndex = orderedKey.indexOf(key[i]) * 2; 
+    for(let i=0; i<keyLen; i++){
         
-        for(let j = 0; j < noRows && startIndex < textLen; j++){
-            arr[j][i]= text[startIndex];
-            startIndex++;
-        }
-        
+         
+         let originKeyIndex = key.indexOf(orderedKey[i]);
+         console.log(originKeyIndex)
+         
+         let iterations = 0;
+         if(originKeyIndex < noCompleteColumns){
+             iterations = noRows;
+         }
+         else{
+             iterations = noCompleteRows;
+         }
+         
+         for(let j = 0; j < noRows && j < iterations; j++){
+            arr[j][key.indexOf(orderedKey[i])] = textArr.splice(0, 1)[0];
+         }
+         
+  
     }
- 
-    
+   
+   
+   
     for(let k = 0; k < noRows; k++){
         decrypted += arr[k].join("");
     }
